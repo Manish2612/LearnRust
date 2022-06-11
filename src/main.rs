@@ -3,37 +3,38 @@ extern crate juniper;
 
 extern crate dotenv;
 
-use std::env;
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use dotenv::dotenv;
+use std::env;
+mod examples;
 
 //Actix imports will be used later for APIs
 use actix_cors::Cors;
-use actix_web::{middleware::Logger,web::Data, App, HttpServer};
+use actix_web::{middleware::Logger, web::Data, App, HttpServer};
 
-// import table object to use it in query
-use server_test::schema::users::dsl::*;
 
-use server_test::models::*;
-
-fn establish_connection()->PgConnection{
+fn establish_connection() -> PgConnection {
     // load env file from root or parent
     dotenv().ok();
     // Read connection string from env
-    let database_url=env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    PgConnection::establish(&database_url).expect(&format!("Error connecting to DB {}", database_url))
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    PgConnection::establish(&database_url)
+        .expect(&format!("Error connecting to DB {}", database_url))
 }
 
-fn main(){
-    let connection = establish_connection(); 
-    let results = users
-        .limit(5)
-        .load::<Users>(&connection)
-        .expect("Error loading users");
+fn borrower<'r>(a :&str, b:&'r str)->&'r str{
+    // lifetime of b is named and its return type is mentioned so rust knows which lifetime to use
+    // otherwise it wont know which lifetime to return if we skip 'r (named lifetime)
+    b
+}
 
-    for usr in results {
-        println!("{}", usr.username);
-        println!("{}", usr.password);
-    }
+fn main() {
+    let connection = establish_connection();
+    // example to demonstrate named lifetime
+    borrower("a", "b");
+    examples::getUsersList(&connection);
+    examples::getTodosList(&connection);
+    examples::joinUserTodo(&connection);
+    examples::joinWithSelectedColumns(&connection);
 }
