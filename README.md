@@ -1,9 +1,10 @@
-# LearnRust
+# Rust + Diesel + PostgreSQL
 
-1. To generate Model file:
-        1. cargo install diesel_cli_ext
-        2. diesel_ext --model > src/models.rs
+### To generate Model file for DB Table:
+        cargo install diesel_cli_ext
+        diesel_ext --model > src/models.rs
 
-2. Using let and const interchangeably can lead to error. Try changing to other if unexpected error thrown 
-    eg. using non-constant variable and try to store update resulting value in "const" variable
+### Using let and const interchangeably
+Using let and const interchangeably can lead to error. Try changing to other if unexpected error thrown 
+eg. using non-constant variable and try to store resulting value in "const" variable will throw error
 
